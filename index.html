@@ -1,1 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Live Code Share</title>
+<style>
+  body { font-family: Arial; padding: 20px; background: #f0f0f0; }
+  textarea { width: 30%; height: 300px; font-family: monospace; margin-right: 2%; }
+  .container { display: flex; margin-bottom: 10px; }
+  button { margin-top: 10px; padding: 10px 20px; margin-right: 10px; }
+</style>
+</head>
+<body>
 
+<h2>Live Code Share</h2>
+
+<div class="container">
+  <textarea id="htmlCode" placeholder="HTML code"></textarea>
+  <textarea id="cssCode" placeholder="CSS code"></textarea>
+  <textarea id="jsCode" placeholder="JS code"></textarea>
+</div>
+
+<button onclick="runCode()">Run Code in New Tab</button>
+<button onclick="generateLink()">Generate Shareable Link</button>
+<button onclick="copyLink()">Copy Link</button>
+
+<p id="linkContainer"></p>
+
+<script>
+let currentLink = '';
+
+// Run code in a new tab
+function runCode() {
+    const html = document.getElementById('htmlCode').value;
+    const css = "<style>" + document.getElementById('cssCode').value + "</style>";
+    const js = "<script>" + document.getElementById('jsCode').value + "<\/script>";
+    const newWindow = window.open();
+    newWindow.document.write(html + css + js);
+    newWindow.document.close();
+}
+
+// Generate shareable link with URL encoding
+function generateLink() {
+    const html = encodeURIComponent(document.getElementById('htmlCode').value);
+    const css = encodeURIComponent(document.getElementById('cssCode').value);
+    const js = encodeURIComponent(document.getElementById('jsCode').value);
+
+    currentLink = `${window.location.origin}${window.location.pathname}?html=${html}&css=${css}&js=${js}`;
+    document.getElementById('linkContainer').innerHTML = 
+        `Shareable Link: <a href="${currentLink}" target="_blank">${currentLink}</a>`;
+}
+
+// Copy the shareable link to clipboard
+function copyLink() {
+    if (!currentLink) { alert("Generate the link first!"); return; }
+    navigator.clipboard.writeText(currentLink).then(() => alert("Link copied!"));
+}
+
+// Auto-load code from URL parameters
+window.addEventListener('load', () => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.has('html')) document.getElementById('htmlCode').value = decodeURIComponent(params.get('html'));
+    if (params.has('css')) document.getElementById('cssCode').value = decodeURIComponent(params.get('css'));
+    if (params.has('js')) document.getElementById('jsCode').value = decodeURIComponent(params.get('js'));
+});
+</script>
+
+</body>
+</html>
