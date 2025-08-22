@@ -1,213 +1,85 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Live Code Share</title>
-<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pixel Themed App with Reviews</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: "Press Start 2P", monospace;
+      background: black;
+      color: white;
+      text-align: center;
+      padding: 20px;
+    }
 
-<style>
-html, body {
-    margin: 0;
-    height: 100%;
-    font-family: 'Press Start 2P', monospace;
-    font-weight: bold;
-    overflow: hidden;
-    color: #ff0000;
-    background: #000;
-    position: relative;
-    cursor: auto;
-    image-rendering: pixelated;
-}
+    .page {
+      display: none;
+    }
+    .active {
+      display: block;
+    }
 
-body::before {
-    content: "";
-    position: fixed;
-    top:0; left:0;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(270deg, #000000, #110000, #220000, #000000);
-    background-size: 800% 800%;
-    filter: blur(0px);
-    z-index: -2;
-    animation: gradientShift 30s ease infinite;
-}
-@keyframes gradientShift {
-    0% {background-position: 0% 50%;}
-    50% {background-position: 100% 50%;}
-    100% {background-position: 0% 50%;}
-}
+    button {
+      background: #444;
+      color: white;
+      border: 2px solid white;
+      padding: 12px 20px;
+      font-family: "Press Start 2P", monospace;
+      cursor: pointer;
+      margin: 10px;
+      font-size: 12px;
+    }
+    button:hover {
+      background: #666;
+    }
 
-.blood-spray {
-    position: fixed;
-    top:0; left:0;
-    width:100%;
-    height:100%;
-    pointer-events: none;
-    z-index: -1;
-}
-.blood-drop {
-    position: absolute;
-    width: 10px; height: 10px;
-    background: red;
-    border-radius: 0;
-    opacity: 0.7;
-    animation: drop 5s linear infinite;
-}
-@keyframes drop {
-    0% {transform: translateY(-50px) translateX(0);}
-    100% {transform: translateY(110vh) translateX(50px);}
-}
+    input, textarea {
+      width: 80%;
+      margin: 10px 0;
+      padding: 10px;
+      font-family: monospace;
+      font-size: 14px;
+    }
 
-h1 { font-size: 48px; margin-bottom: 40px; letter-spacing: 4px; line-height: 1.5; text-shadow: none; }
-h2 { font-size: 36px; margin-bottom: 25px; line-height: 1.4; }
-h3 { font-size: 28px; margin-bottom: 15px; }
-p { font-size: 18px; color: #ccc; margin: 12px 0; line-height: 1.6; }
-
-/* Buttons */
-button, .back-btn, .lang-btn, .review-card {
-    font-family: 'Press Start 2P', monospace;
-    border: 2px solid #ff0000;
-    box-shadow: none;
-    border-radius: 0;
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-button {
-    padding: 15px 30px;
-    font-size: 18px;
-    background-color: #800000;
-    color: #fff;
-    margin: 5px;
-}
-button:hover { background-color: #ff0000; transform: scale(1.1); }
-
-.back-btn {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    padding: 12px 25px;
-    font-size: 16px;
-    background-color: #800000;
-    color: #fff;
-}
-.back-btn:hover { background-color: #ff0000; transform: scale(1.1); }
-
-.page {
-    display: none;
-    height: 100vh;
-    width: 100vw;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    text-align: center;
-    padding: 30px;
-    box-sizing: border-box;
-    position: relative;
-}
-
-#loadingPage { flex-direction: column; font-size: 24px; }
-#loadingText { font-family: 'Press Start 2P', monospace; font-size: 28px; color: #ff0000; letter-spacing: 3px; line-height: 2; }
-
-/* Language selection */
-#languagePage { display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 30px; }
-.lang-container { display: flex; gap: 30px; justify-content: center; }
-.lang-btn { width: 180px; height: 180px; font-size: 16px; background-color: rgba(51,0,0,0.8); display: flex; justify-content: center; align-items: center; text-align: center; color: #fff; }
-.lang-btn:hover { transform: scale(1.1); background-color: rgba(102,0,0,0.9); }
-
-/* Editor */
-#editorPage { display: flex; flex-direction: column; width: 100vw; height: 100vh; padding: 30px; justify-content: flex-start; align-items: center; }
-textarea { width: 60vmin; height: 60vmin; background-color: rgba(17,17,17,0.9); color: #fff; border: 2px solid #ff0000; border-radius: 0; font-family: monospace; resize: none; padding: 25px; font-size: 14px; line-height: 1.4; }
-
-#introButtons { display: flex; gap: 30px; justify-content: center; margin-top: 30px; }
-#aboutPageContent { background: rgba(20,0,0,0.95); padding: 40px; border-radius: 0; box-shadow: none; max-width: 700px; text-align: center; }
-
-/* Reviews page */
-.reviews-container { display: flex; flex-direction: row; gap: 30px; overflow-x: auto; padding: 30px; width: 90%; justify-content: flex-start; }
-.review-card { flex: 0 0 300px; background: rgba(20,0,0,0.95); padding: 25px; color: #fff; display: flex; flex-direction: column; gap: 15px; }
-.review-card strong { font-size: 16px; color: #ff5555; }
-.review-card p { font-size: 14px; color: #ccc; line-height: 1.4; }
-
-/* Updated Star Review */
-.stars {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    font-size: 32px;  /* bigger stars */
-    cursor: pointer;
-}
-
-.stars input[type="radio"] {
-    display: none;  /* hide original radio buttons */
-}
-
-.stars label {
-    color: #555;          /* inactive star color */
-    transition: color 0.2s;
-}
-
-.stars input[type="radio"]:checked ~ label,
-.stars label:hover,
-.stars label:hover ~ label {
-    color: #ff0;          /* active star color */
-}
-</style>
+    .stars input {
+      display: none;
+    }
+    .stars label {
+      font-size: 30px;
+      cursor: pointer;
+    }
+    .review-card {
+      border: 2px solid #555;
+      background: #111;
+      margin: 10px auto;
+      padding: 15px;
+      width: 90%;
+      max-width: 400px;
+      text-align: left;
+    }
+    .stars-display {
+      color: gold;
+      font-size: 18px;
+      margin: 5px 0;
+    }
+  </style>
 </head>
 <body>
-
-<!-- Blood Spray -->
-<div class="blood-spray" id="bloodSpray"></div>
-
-<!-- Intro Page -->
-<div id="introPage" class="page">
-  <h1>Welcome to Live Code Share!</h1>
-  <div id="introButtons">
-    <button onclick="startLoading()">Start Coding</button>
-    <button onclick="openAbout()">About Developer</button>
+  <!-- Intro Page -->
+  <div id="introPage" class="page active">
+    <h1>Welcome to Pixel Reviews ⭐</h1>
+    <button onclick="showPage('reviewFormPage')">Write a Review</button>
+    <button onclick="openReviewsPage()">See Reviews</button>
   </div>
-</div>
 
-<!-- Loading Page -->
-<div id="loadingPage" class="page">
-  <div id="loadingText">Loading</div>
-</div>
+  <!-- Write Review Page -->
+  <div id="reviewFormPage" class="page">
+    <h2>Write a Review</h2>
+    <input type="text" id="nickname" placeholder="Your Nickname"><br>
+    <textarea id="message" placeholder="Write your review"></textarea><br>
 
-<!-- Language Page -->
-<div id="languagePage" class="page">
-  <div class="lang-container">
-    <div class="lang-btn" onclick="chooseLanguage('html')"> HTML </div>
-    <div class="lang-btn" onclick="chooseLanguage('css')"> CSS </div>
-    <div class="lang-btn" onclick="chooseLanguage('js')">JS </div>
-  </div>
-  <button class="back-btn" onclick="backToIntro()">Back</button>
-</div>
-
-<!-- Editor Page -->
-<div id="editorPage" class="page">
-  <h2 id="editorTitle">Editor</h2>
-  <div class="container">
-    <textarea id="codeArea" placeholder="Write your code here..."></textarea>
-  </div>
-  <div class="buttons">
-    <button onclick="runCode()">Run Code in New Tab</button>
-    <button onclick="clearEditor()">Clear / Restart</button>
-  </div>
-  <button class="back-btn" onclick="goBack()">Back</button>
-</div>
-
-<!-- About Developer Page -->
-<div id="aboutPage" class="page">
-  <div id="aboutPageContent">
-    <h2>About the Developer</h2>
-    <p>Hello! I’m <strong>Sabrea Lei S. Agustin</strong>, an aspiring web developer and student. I built this website to allow developers and students to test HTML, CSS, and JS code. This is a private website for some reason, if you want to share this site—please kindly ask for my permission. Working on Progress!</p>
-    <p>Follow me on Instagram: <a href="https://instagram.com/sbr_lei" target="_blank" style="color:#ff5555;">@sbr_lei</a></p>
-
-    <h3>Leave a Star Review:</h3>
-    <input type="text" id="nickname" placeholder="Your nickname" style="width:90%; margin-bottom:15px; padding:15px; font-size:16px;">
-    <textarea id="message" placeholder="Your review message" style="width:90%; height:100px; padding:15px; font-size:16px;"></textarea>
-    
     <div class="stars">
       <input type="radio" id="star5" name="rating" value="5"><label for="star5">★</label>
       <input type="radio" id="star4" name="rating" value="4"><label for="star4">★</label>
@@ -216,114 +88,93 @@ textarea { width: 60vmin; height: 60vmin; background-color: rgba(17,17,17,0.9); 
       <input type="radio" id="star1" name="rating" value="1"><label for="star1">★</label>
     </div>
 
-    <button onclick="submitReview()">Submit Review</button>
-    <button onclick="openReviewsPage()">View Reviews</button>
-    <button class="back-btn" onclick="backToIntro()">Back</button>
+    <button onclick="submitReview()">Submit</button>
+    <button onclick="showPage('introPage')">Back</button>
   </div>
-</div>
 
-<!-- Reviews Page -->
-<div id="reviewsPage" class="page">
-  <h2>User Reviews</h2>
-  <div id="reviewsDisplayPage" class="reviews-container"></div>
-  <button class="back-btn" onclick="backToAbout()">Back</button>
-</div>
+  <!-- Reviews Page -->
+  <div id="reviewsPage" class="page">
+    <h2>All Reviews</h2>
+    <div id="reviewsDisplayPage"></div>
+    <button onclick="showPage('introPage')">Back</button>
+  </div>
 
-<script>
-let selectedLang = '';
+  <!-- Firebase + App Logic -->
+  <script type="module">
+    // Firebase SDK imports
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+    import { getFirestore, collection, addDoc, getDocs, orderBy, query } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 
-function showPage(id){
-  document.querySelectorAll('.page').forEach(p=>p.style.display='none');
-  document.getElementById(id).style.display='flex';
-}
+    // Firebase config
+    const firebaseConfig = {
+      apiKey: "AIzaSyCwwbu-j1UrEex0r517_77P_TKU3mKDZ34",
+      authDomain: "live-code-share-62c67.firebaseapp.com",
+      projectId: "live-code-share-62c67",
+      storageBucket: "live-code-share-62c67.firebasestorage.app",
+      messagingSenderId: "20442974828",
+      appId: "1:20442974828:web:fdfec35d44e6aed4a5e649",
+      measurementId: "G-R4D9K1H34C"
+    };
 
-function startLoading() {
-  showPage('loadingPage');
-  setTimeout(()=>{ 
-    showPage('languagePage'); 
-    stopLoadingAnimation();
-  },2000);
-}
+    // Init Firebase
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
 
-function chooseLanguage(lang){
-  selectedLang = lang;
-  showPage('editorPage');
-  document.getElementById('editorTitle').innerText = `${lang.toUpperCase()} Editor`;
-  document.getElementById('codeArea').placeholder = `Write your ${lang.toUpperCase()} code here...`;
-}
+    // Page switcher
+    window.showPage = function(pageId) {
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      document.getElementById(pageId).classList.add('active');
+    }
 
-function runCode(){
-  const code = document.getElementById('codeArea').value;
-  let newWindow = window.open();
-  if(selectedLang==='html') newWindow.document.write(code);
-  else if(selectedLang==='css') newWindow.document.write(`<style>${code}</style>`);
-  else if(selectedLang==='js') newWindow.document.write(`<script>${code}<\/script>`);
-  newWindow.document.close();
-}
+    // Submit review to Firestore
+    window.submitReview = async function () {
+      const nick = document.getElementById('nickname').value.trim();
+      const msg = document.getElementById('message').value.trim();
+      const star = document.querySelector('input[name="rating"]:checked');
 
-function clearEditor(){ document.getElementById('codeArea').value=''; }
-function goBack(){ showPage('languagePage'); }
-function backToIntro(){ showPage('introPage'); }
-function openAbout(){ showPage('aboutPage'); }
+      if (!nick || !msg || !star) {
+        alert('Please fill all fields and select a star');
+        return;
+      }
 
-/* Persistent Reviews */
-window.addEventListener('load', () => {
-  if(!localStorage.getItem('reviews')) localStorage.setItem('reviews', JSON.stringify([]));
-});
+      try {
+        await addDoc(collection(db, "reviews"), {
+          nickname: nick,
+          message: msg,
+          star: parseInt(star.value),
+          timestamp: new Date()
+        });
+        alert("✅ Review submitted!");
+        document.getElementById('nickname').value = '';
+        document.getElementById('message').value = '';
+        document.querySelectorAll('input[name="rating"]').forEach(r => r.checked = false);
+        showPage('introPage');
+      } catch (err) {
+        console.error("Error saving review: ", err);
+      }
+    }
 
-function submitReview(){
-  const nick = document.getElementById('nickname').value.trim();
-  const msg = document.getElementById('message').value.trim();
-  const star = document.querySelector('input[name="rating"]:checked');
-  if(!nick || !msg || !star){ alert('Please fill all fields and select a star'); return; }
+    // Load reviews from Firestore
+    window.openReviewsPage = async function () {
+      showPage('reviewsPage');
+      const container = document.getElementById('reviewsDisplayPage');
+      container.innerHTML = '';
 
-  const savedReviews = JSON.parse(localStorage.getItem('reviews')) || [];
-  savedReviews.push({nickname: nick, message: msg, star: star.value});
-  localStorage.setItem('reviews', JSON.stringify(savedReviews));
+      const q = query(collection(db, "reviews"), orderBy("timestamp", "desc"));
+      const querySnapshot = await getDocs(q);
 
-  document.getElementById('nickname').value='';
-  document.getElementById('message').value='';
-  document.querySelectorAll('input[name="rating"]').forEach(r=>r.checked=false);
-}
-
-function openReviewsPage(){
-  showPage('reviewsPage');
-  const container = document.getElementById('reviewsDisplayPage');
-  container.innerHTML = '';
-  const savedReviews = JSON.parse(localStorage.getItem('reviews')) || [];
-  savedReviews.forEach(r => {
-    const div = document.createElement('div');
-    div.className = 'review-card';
-    div.innerHTML = `<strong>${r.nickname}</strong><div class="stars">${'★'.repeat(r.star)+'☆'.repeat(5-r.star)}</div><p>${r.message}</p>`;
-    container.appendChild(div);
-  });
-}
-
-function backToAbout(){ showPage('aboutPage'); }
-
-const bloodSpray = document.getElementById('bloodSpray');
-for(let i=0;i<30;i++){
-  const drop = document.createElement('div');
-  drop.className='blood-drop';
-  drop.style.left=Math.random()*100+'vw';
-  drop.style.animationDuration=(3+Math.random()*5)+'s';
-  drop.style.width=(5+Math.random()*10)+'px';
-  drop.style.height=drop.style.width;
-  bloodSpray.appendChild(drop);
-}
-
-/* Loading animation */
-let loadingText = document.getElementById('loadingText');
-let dotCount = 0;
-let loadingInterval = setInterval(() => {
-  dotCount = (dotCount + 1) % 4;
-  loadingText.innerText = 'Loading' + '.'.repeat(dotCount);
-}, 500);
-
-function stopLoadingAnimation() {
-  clearInterval(loadingInterval);
-}
-</script>
-
+      querySnapshot.forEach(doc => {
+        const r = doc.data();
+        const div = document.createElement('div');
+        div.className = 'review-card';
+        div.innerHTML = `
+          <strong>${r.nickname}</strong>
+          <div class="stars-display">${'★'.repeat(r.star)}${'☆'.repeat(5-r.star)}</div>
+          <p>${r.message}</p>
+        `;
+        container.appendChild(div);
+      });
+    }
+  </script>
 </body>
 </html>
