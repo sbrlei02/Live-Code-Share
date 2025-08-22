@@ -109,7 +109,6 @@ button:hover { background-color: #ff0000; transform: scale(1.1); }
     position: relative;
 }
 
-/* Loading */
 #loadingPage { flex-direction: column; font-size: 24px; }
 #loadingText { font-family: 'Press Start 2P', monospace; font-size: 28px; color: #ff0000; letter-spacing: 3px; line-height: 2; }
 
@@ -121,19 +120,8 @@ button:hover { background-color: #ff0000; transform: scale(1.1); }
 
 /* Editor */
 #editorPage { display: flex; flex-direction: column; width: 100vw; height: 100vh; padding: 30px; justify-content: flex-start; align-items: center; }
-textarea {
-    width: 60vmin;
-    height: 60vmin;
-    background-color: rgba(17,17,17,0.9);
-    color: #ffffff;          /* White text inside code editor */
-    border: 2px solid #ff0000;
-    border-radius: 0;
-    font-family: 'Press Start 2P', monospace;
-    resize: none;
-    padding: 25px;
-    font-size: 14px;         /* Smaller font for code */
-    line-height: 1.4;
-}
+textarea { width: 60vmin; height: 60vmin; background-color: rgba(17,17,17,0.9); color: #fff; border: 2px solid #ff0000; border-radius: 0; font-family: monospace; resize: none; padding: 25px; font-size: 14px; line-height: 1.4; }
+
 #introButtons { display: flex; gap: 30px; justify-content: center; margin-top: 30px; }
 #aboutPageContent { background: rgba(20,0,0,0.95); padding: 40px; border-radius: 0; box-shadow: none; max-width: 700px; text-align: center; }
 
@@ -142,7 +130,30 @@ textarea {
 .review-card { flex: 0 0 300px; background: rgba(20,0,0,0.95); padding: 25px; color: #fff; display: flex; flex-direction: column; gap: 15px; }
 .review-card strong { font-size: 16px; color: #ff5555; }
 .review-card p { font-size: 14px; color: #ccc; line-height: 1.4; }
-.review-card .stars { color: #ff0; font-size: 16px; }
+
+/* Updated Star Review */
+.stars {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    font-size: 32px;  /* bigger stars */
+    cursor: pointer;
+}
+
+.stars input[type="radio"] {
+    display: none;  /* hide original radio buttons */
+}
+
+.stars label {
+    color: #555;          /* inactive star color */
+    transition: color 0.2s;
+}
+
+.stars input[type="radio"]:checked ~ label,
+.stars label:hover,
+.stars label:hover ~ label {
+    color: #ff0;          /* active star color */
+}
 </style>
 </head>
 <body>
@@ -197,6 +208,7 @@ textarea {
     <h3>Leave a Star Review:</h3>
     <input type="text" id="nickname" placeholder="Your nickname" style="width:90%; margin-bottom:15px; padding:15px; font-size:16px;">
     <textarea id="message" placeholder="Your review message" style="width:90%; height:100px; padding:15px; font-size:16px;"></textarea>
+    
     <div class="stars">
       <input type="radio" id="star5" name="rating" value="5"><label for="star5">★</label>
       <input type="radio" id="star4" name="rating" value="4"><label for="star4">★</label>
@@ -204,6 +216,7 @@ textarea {
       <input type="radio" id="star2" name="rating" value="2"><label for="star2">★</label>
       <input type="radio" id="star1" name="rating" value="1"><label for="star1">★</label>
     </div>
+
     <button onclick="submitReview()">Submit Review</button>
     <button onclick="openReviewsPage()">View Reviews</button>
     <button class="back-btn" onclick="backToIntro()">Back</button>
@@ -300,6 +313,7 @@ for(let i=0;i<30;i++){
   bloodSpray.appendChild(drop);
 }
 
+/* Loading animation */
 let loadingText = document.getElementById('loadingText');
 let dotCount = 0;
 let loadingInterval = setInterval(() => {
